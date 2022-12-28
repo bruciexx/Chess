@@ -52,7 +52,6 @@ class GameState:
             self.white_king_pos = (move.end_row, move.end_col)
         if move.piece_moved == "bK":  # update black king loc if moved
             self.black_king_pos = (move.end_row, move.end_col)
-        self.white_to_move = not self.white_to_move  # switches turn
         if move.is_pawn_promotion:  # pawn promotion
             promoted_piece = input("Promote to Q, R, B, or N:")
             self.board[move.end_row][move.end_col] = move.piece_moved[0] + promoted_piece
@@ -70,6 +69,11 @@ class GameState:
             else:  # long castle
                 self.board[move.end_row][move.end_col + 1] = self.board[move.end_row][move.end_col - 2]  # move rook
                 self.board[move.end_row][move.end_col - 2] = "--"  # erase old rook
+        self.white_to_move = not self.white_to_move  # switches turn
+        if self.white_to_move:
+            print("White to move")
+        else:
+            print("Black to move")
         self.update_castle_rights(move)
         self.castle_log.append(CastleRights(self.current_castle_rights.ws, self.current_castle_rights.bs,
                                             self.current_castle_rights.wl, self.current_castle_rights.bl))
@@ -220,11 +224,6 @@ class GameState:
                     piece = self.board[r][c][1]
                     # noinspection PyArgumentList
                     self.move_functions[piece](r, c, moves)  # calls piece move function based on piece type
-        if self.white_to_move:
-            print("White to move")
-        else:
-            print("Black to move")
-        print(moves)
         return moves
 
 

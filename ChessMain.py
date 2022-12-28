@@ -61,13 +61,18 @@ def main():
                     player_clicks.append(sq_selected)
                 if len(player_clicks) == 2:  # after 2nd click (move piece)
                     move = ChessEngine.Move(player_clicks[0], player_clicks[1], gs.board)  # keeps track of current move
-                    print(move.get_chess_notation())  # prints move to console
-                    for i in range(len(valid_moves)):
-                        if move == valid_moves[i]:  # checks if move valid
-                            gs.make_move(valid_moves[i])  # this actually makes the move
-                            move_made = True
-                            sq_selected = ()  # emptying to get rea-
-                            player_clicks = []  # -dy for a new move
+                    print("This is the current move:", move)
+                    #for i in range(len(valid_moves)):
+                    if move in valid_moves:  # checks if move valid
+                        print(move.get_chess_notation())  # prints move to console
+                        print("playing:", move)
+                        gs.make_move(move)  # this actually makes the move
+                        move_made = True
+                        sq_selected = ()  # emptying to get rea-
+                        player_clicks = []  # -dy for a new move
+                        break
+                    else:
+                        print(move, "is not a valid move")  # prints move to console
                     if not move_made:
                         player_clicks = [sq_selected]
             # handles keyboard events
