@@ -13,14 +13,14 @@ class GameState:
         # 8x8 2d list, each element 2 chars, first char repr color, second char repr piece type
         # chessboard
         self.board = [
-            ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
-            ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+            ["--", "--", "--", "--", "bK", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "--", "bP"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
-            ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
+            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "--", "--", "--", "--", "wK", "--"],
         ]
         self.move_functions = {'P': self.get_pawn_moves, 'B': self.get_bishop_moves, 'N': self.get_knight_moves,
                                'R': self.get_rook_moves, 'Q': self.get_queen_moves, 'K': self.get_king_moves}
@@ -194,15 +194,15 @@ class GameState:
         else:  # if not in check
             print("not in check")
             moves += self.get_all_possible_moves()  # all moves are valid
-        if self.in_check:  # in check
-            print("no moves left")
-            if len(moves) == 0: # no valid moves
-                self.checkmate = True
-            else:
-                self.stalemate = True
-        else:
-            self.checkmate = False
-            self.stalemate = False
+        #if self.in_check:  # in check
+        #    print("no moves left")
+        #    if len(moves) == 0: # no valid moves
+        #        self.checkmate = True
+        #    else:
+        #        self.stalemate = True
+        #else:
+        #    self.checkmate = False
+        #    self.stalemate = False
         print(moves)
         return moves
 
@@ -220,6 +220,10 @@ class GameState:
                     piece = self.board[r][c][1]
                     # noinspection PyArgumentList
                     self.move_functions[piece](r, c, moves)  # calls piece move function based on piece type
+        if self.white_to_move:
+            print("White to move")
+        else:
+            print("Black to move")
         print(moves)
         return moves
 
@@ -381,12 +385,11 @@ class GameState:
         '''
         Get all potential king moves for king at square [r][c] and add these to the list of possible moves
         '''
-        row_moves = (-1, -1, -1, 0, 0, 1, 1, 1)
-        col_moves = (-1, 0, 1, -1, 1, -1, 0, 1)
+        move_directions = [[-1, -1], [-1, 0], [0, 1], [1, 1], [-1, 0], [1, -1], [1, -1], [0, 1]]
         enemy_color = "b" if self.white_to_move else "w"
-        for i in range(1):
-            end_row = r + row_moves[i]
-            end_col = c + col_moves[i]
+        for dx, dy in move_directions:
+            end_row = r + int(dx)
+            end_col = c + int(dy)
             if 0 <= end_row < 8 and 0 <= end_col < 8:
                 end_piece = self.board[end_row][end_col]
                 if end_piece[0] == enemy_color or end_piece[0] == "-":
